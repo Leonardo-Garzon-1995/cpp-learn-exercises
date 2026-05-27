@@ -1,17 +1,15 @@
 #include <iostream>
 #include <cstring>
 
-struct Data2 {
-    float x {};
-    float y {};
-};
-
 class MyString {
     private:
         char* m_Buffer {};
         unsigned int m_Size {};
     public:
+        // Main/Initial Constructor
         MyString(const char* string) {
+            std::cout << "CONSTRUCT MYSTRING\n";
+
             m_Size = strlen(string);
             m_Buffer = new char[m_Size + 1]; // The plus one accounts for the null terminator
             m_Buffer[m_Size] = 0; // Null terminator at the end of the string
@@ -20,13 +18,26 @@ class MyString {
                 m_Buffer[i] = string[i];
             }
 
-            // memccpy(m_Buffer, string, m_Size);  // You can use this instead of the for loop
+            // memcpy(m_Buffer, string, m_Size);  // You can use this instead of the for loop
         }
 
+        // Copy Constructor
+        MyString(const MyString& other) : m_Size(other.m_Size) {
+            std::cout << "Copy constructor got called\n";
+            m_Buffer = new char[m_Size + 1];
+            memcpy(m_Buffer, other.m_Buffer, m_Size + 1); // you could use the for loop as well  
+        }
+
+        // Destructor
         ~MyString() {
             std::cout << "DESTROY MYSTRING\n";
             delete[] m_Buffer;
         }
+
+        char& operator[](unsigned int index) {
+            return m_Buffer[index];
+        }
+
 
         friend std::ostream& operator<<(std::ostream& os, const MyString& s);
 
@@ -40,18 +51,12 @@ std::ostream& operator<<(std::ostream& os, const MyString& s) {
 
 int main() {
 
-    int x { 5 };
-    int b { x }; // b makes a copy of 'a', each one 'b' and 'a' occupy their own space in memory
-    b = 7; // 'a' is not modified since b was a copy
-
-    Data2 n = { 2, 3 };
-    Data2 d = n;
-    d.x = 10; // 'n' is not affected
-
+    // DEEP COPY
     MyString name {"Leonardo"};
-    // MyString second { name }; // The program will crash when copy directly, this is because both 'name' and 'second' use the same pointer address
+    MyString second { name }; 
+    second[2] = 'H'; 
     std::cout << name << std::endl;
-    // std::cout << second << std::endl; 
+    std::cout << second << std::endl; 
 
 
     return 0;

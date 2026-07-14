@@ -23,4 +23,7 @@ int main() {
     int a { 2 };
 
     forEach(values, [&a](const int& i) { std::cout << "Value: " << i + a << '\n'; }); // the '[](param) {}' structure is a lambda function
+    // Passing 'a' inside [] means that the lambda function can access 
+    // the variable a from the outer scope by reference. 
+    // This allows the lambda to use and modify the value of 'a' if needed.
 }
